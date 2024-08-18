@@ -6,8 +6,8 @@ library(openxlsx)
 #データ整理と変換
 #(a)Semester Dataの整形
 #1.生データの読み込み
-semester_dummy_1 <- read.csv(file.choose())
-semester_dummy_2 <- read.csv(file.choose())
+semester_dummy_1 <- read.csv("01_data/raw/semester_dummy/semester_data_1.csv")
+semester_dummy_2 <- read.csv("01_data/raw/semester_dummy/semester_data_2.csv")
 
 #2.一列目を列名に
 colnames(semester_dummy_1) <- semester_dummy_1[1,]
@@ -73,4 +73,11 @@ covariates <- covariates %>% str_replace_all(pattern =  "aaaa", replacement = ""
 #6.outcome_dataに含まれるunitidを特定し、covariatesに含まれるunitidをoutcomeデータに揃える
 
 #(d)Master Dataの作成
+#cleaning後データの読み込み
+clean_covariates <- read.csv("01_data/intermediate/clean_covariates.csv")
+clean_outcome <- read.csv("01_data/intermediate/clean_outcome.csv")
+clean_semester <- read.csv("01_data/intermediate/clean_semester_dummy.csv")
 #1.結合に用いる変数を考え、semester_data, covariates_data, gradrate_dataを適切に結合
+master_data <- clean_covariates %>% 
+               dplyr::left_join(., clean_outcome, by="X")%>%
+               dplyr::left_join(., clean_semester, by="X")
